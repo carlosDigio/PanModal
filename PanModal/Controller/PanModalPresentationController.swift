@@ -393,14 +393,14 @@ private extension PanModalPresentationController {
      Reduce height of presentedView so that it sits at the bottom of the screen
      */
     func adjustPresentedViewFrame() {
-
-        guard let frame = containerView?.frame
-            else { return }
-
-        let adjustedSize = CGSize(width: frame.size.width, height: frame.size.height - anchoredYPosition)
+        guard let frame = containerView?.frame else { return }
+    
+        let width = min(frame.width, presentable?.panModalMaxWidth ?? .greatestFiniteMagnitude)
+        let xOffset = (frame.width - width) / 2
+        let adjustedSize = CGSize(width: width, height: frame.size.height - anchoredYPosition)
         let panFrame = panContainerView.frame
-        panContainerView.frame.size = frame.size
-
+        panContainerView.frame.size = CGSize(width: width, height: frame.height)
+    
         if ![shortFormYPosition, longFormYPosition].contains(panFrame.origin.y) {
             // if the container is already in the correct position, no need to adjust positioning
             // (rotations & size changes cause positioning to be out of sync)
@@ -408,7 +408,7 @@ private extension PanModalPresentationController {
             presentedView.frame.origin.y = max(yPosition, anchoredYPosition)
             dragIndicatorView.frame.origin.y = presentedView.frame.origin.y - Constants.indicatorYOffset
         }
-        panContainerView.frame.origin.x = frame.origin.x
+        panContainerView.frame.origin.x = frame.origin.x + xOffset
         presentedViewController.view.frame = CGRect(origin: .zero, size: adjustedSize)
     }
 
@@ -443,7 +443,7 @@ private extension PanModalPresentationController {
         dragIndicatorView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(dragIndicatorView)
         dragIndicatorView.bottomAnchor.constraint(equalTo: pinEdgeView.topAnchor, constant: -Constants.indicatorYOffset).isActive = true
-        dragIndicatorView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        dragIndicatorView.centerXAnchor.constraint(equalTo: pinEdgeView.centerXAnchor).isActive = true
         dragIndicatorView.widthAnchor.constraint(equalToConstant: Constants.dragIndicatorSize.width).isActive = true
         dragIndicatorView.heightAnchor.constraint(equalToConstant: Constants.dragIndicatorSize.height).isActive = true
     }
@@ -846,7 +846,7 @@ private extension PanModalPresentationController {
          Decrease the view bounds by the y offset so the scroll view stays in place
          and we can still get updates on its content offset
          */
-        presentedView.bounds.size = CGSize(width: presentedSize.width, height: presentedSize.height + yOffset)
+        presentedView.bounds.size = CGSize(width: presentedView.bounds.width, height: presentedSize.height + yOffset)
 
         if oldYValue > yOffset {
             /**

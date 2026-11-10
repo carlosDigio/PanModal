@@ -201,6 +201,17 @@ public protocol PanModalPresentable: AnyObject {
     var shouldAdjustToBottomSafeArea: Bool { get }
     
     /**
+     The maximum width of the pan modal container view.
+     Return nil to use the full width of the container view.
+
+     - Note: Useful on iPad, where a full width sheet looks oversized.
+     The modal is horizontally centered when the width is capped.
+
+     Default value is nil.
+     */
+    var panModalMaxWidth: CGFloat? { get }
+
+    /**
      Asks the delegate if the pan modal should begin to track the pan gesture.
      
      Return false to not track the pan gesture and possibly let other observers track the gesture

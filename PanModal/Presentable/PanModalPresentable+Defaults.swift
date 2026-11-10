@@ -113,6 +113,10 @@ public extension PanModalPresentable where Self: UIViewController {
         true
     }
     
+    var panModalMaxWidth: CGFloat? {
+        nil
+    }
+    
     func shouldBeginPanGesture(_ panModalGestureRecognizer: UIPanGestureRecognizer) -> Bool {
         return true
     }
